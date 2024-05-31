@@ -8,7 +8,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className="bg-gray-800 ">
+      <nav className="bg-gray-800">
         <div className="flex space-x-4 p-2">
           {/* <Link
             href="/"
