@@ -1,9 +1,49 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 const AddBlog = () => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [content, setContent] = useState("");
+  // console.log(title, description, content)
+
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!title || !description || !content) {
+      alert("Fill all the Fields!");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/api/addblog/", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ title, description, content }),
+      });
+
+      if(res.ok){
+        router.push('/');
+      }else{
+        throw new Error("Failed to Create Blog")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
   return (
     <>
-      <div className="w-6/12 mt-20 flex flex-col bg-whilte-400 m-auto h-screen">
+      <form
+        className="w-6/12 mt-20 flex flex-col bg-whilte-400 m-auto h-screen"
+        onSubmit={handleSubmit}
+      >
         <label
-          for="title"
+          htmlFor="title"
           className="block text-sm font-medium leading-6 text-white-900"
         >
           Title
@@ -14,10 +54,14 @@ const AddBlog = () => {
             name="title"
             className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             placeholder="Title"
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
           />
         </div>
         <label
-          for="description"
+          htmlFor="description"
           className="block text-sm font-medium leading-6 text-white-900 mt-5"
         >
           Description
@@ -28,10 +72,14 @@ const AddBlog = () => {
             name="description"
             className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             placeholder="Meta-Description"
+            value={description}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
           />
         </div>
         <label
-          for="content"
+          htmlFor="content"
           className="block text-sm font-medium leading-6 text-white-900 mt-5"
         >
           Content
@@ -42,6 +90,10 @@ const AddBlog = () => {
             name="content"
             className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             placeholder="Write content for your blog..."
+            value={content}
+            onChange={(e) => {
+              setContent(e.target.value);
+            }}
           />
         </div>
         <button
@@ -50,7 +102,7 @@ const AddBlog = () => {
         >
           Submit
         </button>
-      </div>
+      </form>
     </>
   );
 };
